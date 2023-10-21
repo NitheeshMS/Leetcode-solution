@@ -1,22 +1,25 @@
 class Solution {
     public int constrainedSubsetSum(int[] nums, int k) {
-        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> {
-            return b[0] - a[0];
-        });
+        int maxSum = nums[0];
+        Deque<Integer> maxSumQueue = new ArrayDeque<>();
         
-        heap.add(new int[] {nums[0], 0});
-        int ans = nums[0];
-        
-        for (int i = 1; i < nums.length; i++) {
-            while (i - heap.peek()[1] > k) {
-                heap.remove();
+        for (int i = 0; i < nums.length; ++i) {
+            nums[i] += !maxSumQueue.isEmpty() ? maxSumQueue.peek() : 0;
+            maxSum = Math.max(maxSum, nums[i]);
+            
+            while (!maxSumQueue.isEmpty() && nums[i] > maxSumQueue.peekLast()) {
+                maxSumQueue.pollLast();
             }
             
-            int curr = Math.max(0, heap.peek()[0]) + nums[i];
-            ans = Math.max(ans, curr);
-            heap.add(new int[] {curr, i});
+            if (nums[i] > 0) {
+                maxSumQueue.offer(nums[i]);
+            }
+            
+            if (i >= k && !maxSumQueue.isEmpty() && maxSumQueue.peek() == nums[i - k]) {
+                maxSumQueue.poll();
+            }
         }
         
-        return ans;
+        return maxSum;
     }
 }
