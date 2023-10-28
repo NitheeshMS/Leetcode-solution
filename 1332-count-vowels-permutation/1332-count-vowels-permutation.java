@@ -1,27 +1,18 @@
 class Solution {
     public int countVowelPermutation(int n) {
-        long[] counts = {1L,1L,1L,1L,1L};
-        int MOD = 1000000007;
-
-        for(int x = 2; x <= n; x++) {
-            //a can follow e, i and u
-            long a = counts[1] + counts[2] + counts[4];
-            //e can follow a and i
-            long e = counts[0] + counts[2];
-            //i can follow e and o
-            long i = counts[1] + counts[3];
-            //o can follow i
-            long o = counts[2];
-            //u can follow i and o
-            long u = counts[2] + counts[3];
-
-            counts[0] = a % MOD;
-            counts[1] = e % MOD;
-            counts[2] = i % MOD;
-            counts[3] = o % MOD;
-            counts[4] = u % MOD;
+        long[] vowels = new long[5];
+        Arrays.fill(vowels, 1);
+        int mod = (int) (Math.pow(10, 9) + 7);
+        while (n > 1) {
+            long[] temp = new long[5];
+            temp[0] = (vowels[1] + vowels[2] + vowels[4]) % mod;
+            temp[1] = vowels[0] + vowels[2] % mod;
+            temp[2] = vowels[1] + vowels[3] % mod;
+            temp[3] = vowels[2] % mod;
+            temp[4] = vowels[2] + vowels[3] % mod;
+            vowels = temp;
+            n--;
         }
-
-        return (int)((counts[0] + counts[1] + counts[2] + counts[3] + counts[4])%MOD);
+        return (int) ((vowels[0] + vowels[1] + vowels[2] + vowels[3] + vowels[4]) % mod);
     }
 }
